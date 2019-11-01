@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import * as actionCreators from '../../store/actions/actions';
 
 import CounterControl from '../../components/CounterControl/CounterControl';
 import CounterOutput from '../../components/CounterOutput/CounterOutput';
@@ -31,10 +32,10 @@ class Counter extends Component {
                 <CounterControl label="Add 5" clicked={this.props.onAddCounter}  />
                 <CounterControl label="Subtract 5" clicked={this.props.onSubtractCounter}  />
                 <hr />
-                <button onClick = {this.props.onStoreResult} > Resultado del almacenamiento </button>
+                <button onClick = {() => this.props.onStoreResult(this.props.contador)} > Resultado del almacenamiento </button>
                 <ul>
                     {this.props.storedResults.map(strResult => (
-                        <li key = {strResult.id} onClick = {this.props.onDeleteResult}>{strResult.value}</li>
+                        <li key = {strResult.id} onClick = {() => this.props.onDeleteResult(strResult.id)}>{strResult.value}</li>
                     ))}
                 </ul>
             </div>
@@ -46,8 +47,8 @@ class Counter extends Component {
 //dentro del componente
 const mapStateToProps = state => {
     return {
-        contador: state.counter,
-        storedResults: state.results
+        contador: state.contador.counter,
+        storedResults: state.storedResults.results
     };
 }
 
@@ -56,12 +57,12 @@ const mapDispatchToProps = dispatch => {
     return {
         //increment se conecta por medio de "connect" a funcion reducer, 
         //action.type == 'INCREMENT'
-        onIncrementCounter: () => dispatch({type: 'INCREMENT'}),
-        onDecrementCounter: () => dispatch({type: 'DECREMENT'}),
-        onAddCounter: () => dispatch({type: 'ADD', value: 5}),
-        onSubtractCounter: () => dispatch({type: 'SUBTRACT', value: 5}),
-        onStoreResult: () => dispatch({type: 'STORE_RESULT'}),
-        onDeleteResult: () => dispatch({type: 'DELETE_RESULT'})
+        onIncrementCounter: () => dispatch(actionCreators.increment()),
+        onDecrementCounter: () => dispatch(actionCreators.decrement()),
+        onAddCounter: () => dispatch(actionCreators.add(5)),
+        onSubtractCounter: () => dispatch(actionCreators.subtract(5)),
+        onStoreResult: (result) => dispatch(actionCreators.store_result(result)),
+        onDeleteResult: (id) => dispatch(actionCreators.delete_result(id))
     };
 }
 
